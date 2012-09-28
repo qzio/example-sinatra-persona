@@ -1,4 +1,4 @@
 example-sinatra-persona
 =======================
 
-sample sinatra app implementing persona authentication
+bare bone sample sinatra.rb app implementing persona authentication

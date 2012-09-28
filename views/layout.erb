@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>persona test</title>
+    <script src="/jquery.min.js"></script>
+    <script src="https://login.persona.org/include.js"></script>
+  </head>
+  <body>
+    <h1> Persona test site </h1>
+    <% if logged_in? %>
+      current logged in as <%= @auth_email%>
+      <a id="signout" href="/logout"> sign out </a>
+    <% else %>
+      <a id="signin" href="/login">sign in with persona</a>
+    <% end %>
+    <hr/>
+    <%= yield %>
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var signinLink = $('#signin');
+        var signoutLink = $('#signout');
+        if (signinLink.length > 0) {
+          signinLink.click(function() {
+            navigator.id.request();
+            return false;
+          });
+        }
+        if (signoutLink.length > 0) {
+          signoutLink.click(function() {
+            navigator.id.logout();
+            return false;
+          });
+        }
+
+        var currentUser = <%= (logged_in?) ? "'#{@auth_email}'" : "null"%>;
+        navigator.id.watch({
+          loggedInUser: currentUser,
+          onlogin: function(assertion) {
+            $.ajax({
+              type: 'POST',
+              url: '/login',
+              data: {assertion: assertion},
+              success: function(res, status, xhr) { window.location.reload(); },
+              error: function(res, status, xhr) { alert("login failure" + res); }
+            });
+          },
+          onlogout: function() {
+            $.ajax({
+              type: 'POST',
+              url: '/logout',
+              success: function(res, status, xhr) { window.location.reload(); },
+              error: function(res, status, xhr) { alert("logout failure" + res); }
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
