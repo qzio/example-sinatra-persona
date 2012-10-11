@@ -4,6 +4,8 @@ require 'rest-client'
 require 'json'
 require 'erb'
 
+AUDIENCE = "example.com:4567"
+
 configure do
   Sinatra::Application.reset!
   use Rack::Reloader
@@ -38,7 +40,7 @@ post '/login' do
   content_type :json
   post_params = {
     :assertion => params["assertion"],
-    :audience => request.env["HTTP_HOST"]
+    :audience  => AUDIENCE,
   }
   resp = RestClient.post("https://verifier.login.persona.org/verify", post_params)
   data = JSON.parse(resp)
@@ -50,4 +52,23 @@ post '/login' do
     puts "not sure about the data: #{data.inspect}"
     return {:status => "error"}.to_json
   end
+end
+
+get '/j' do
+  r = """
+  hej hopp
+<form method='post' action=''>
+<input type='checkbox' name='foo[]' value='1'/>
+<input type='checkbox' name='foo[]' value='2'/>
+<input type='checkbox' name='foo[]' value='3'/>
+<input type='checkbox' name='foo[]' value='4444'>
+<input type='submit'>
+</form>
+  """
+  return r
+end
+
+post '/j' do
+  puts "params: #{params.inspect}"
+  return "ok"
 end
