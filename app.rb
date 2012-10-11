@@ -4,15 +4,18 @@ require 'rest-client'
 require 'json'
 require 'erb'
 
-AUDIENCE = "example.com:4567"
-
 configure do
   Sinatra::Application.reset!
   use Rack::Reloader
 end
 
+# you need to change this accordingly
+AUDIENCE = "http://example.com:4567"
+# change session_secret for obvious reason
+set :session_secret, 'you_must_change_me'
+
 enable :sessions
-set :session_secret, 'abc123'
+
 
 error 400..510 do
   'http error...'
