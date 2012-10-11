@@ -53,22 +53,3 @@ post '/login' do
     return {:status => "error"}.to_json
   end
 end
-
-get '/j' do
-  r = """
-  hej hopp
-<form method='post' action=''>
-<input type='checkbox' name='foo[]' value='1'/>
-<input type='checkbox' name='foo[]' value='2'/>
-<input type='checkbox' name='foo[]' value='3'/>
-<input type='checkbox' name='foo[]' value='4444'>
-<input type='submit'>
-</form>
-  """
-  return r
-end
-
-post '/j' do
-  puts "params: #{params.inspect}"
-  return "ok"
-end
