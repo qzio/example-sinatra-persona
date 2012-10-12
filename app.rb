@@ -45,7 +45,9 @@ post '/login' do
     :assertion => params["assertion"],
     :audience  => AUDIENCE,
   }
-  resp = RestClient.post("https://verifier.login.persona.org/verify", post_params)
+  resp = RestClient::Resource.new("https://verifier.login.persona.org/verify",
+                                  :verify_ssl => true
+                                 ).post(post_params)
   data = JSON.parse(resp)
   if data["status"].eql?("okay")
     session[:auth_email] = data["email"]
